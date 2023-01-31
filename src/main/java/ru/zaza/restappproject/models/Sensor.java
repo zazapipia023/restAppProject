@@ -19,8 +19,8 @@ public class Sensor {
     @Size(min = 3, max = 30, message = "Sensor name should be between 3-30 characters")
     private String name;
 
-    @OneToMany(mappedBy = "sensor", fetch = FetchType.LAZY)
-    private List<Measurement> measurements;
+//    @OneToMany(mappedBy = "sensor", fetch = FetchType.EAGER)
+//    private List<Measurement> measurements;
 
     public Sensor() {
 
@@ -46,4 +46,5 @@ public class Sensor {
     public void setName(String name) {
         this.name = name;
     }
+
 }

@@ -7,13 +7,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import ru.zaza.restappproject.dto.MeasurementDTO;
 import ru.zaza.restappproject.models.Measurement;
 import ru.zaza.restappproject.services.MeasurementService;
+import ru.zaza.restappproject.util.MeasurementErrorResponse;
+import ru.zaza.restappproject.util.MeasurementNotCreatedException;
+import ru.zaza.restappproject.util.MeasurementNotFoundException;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -37,7 +37,7 @@ public class MeasurementController {
         return measurementService.findAll().stream().map(this::convertToMeasurementDTO).collect(Collectors.toList());
     }
 
-    @PostMapping()
+    @PostMapping("/add")
     public ResponseEntity<HttpStatus> create(@RequestBody @Valid MeasurementDTO measurementDTO,
                                              BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
@@ -51,7 +51,7 @@ public class MeasurementController {
                         .append(";");
             }
 
-            // TODO: MeasurementNotCreatedException
+            throw new MeasurementNotCreatedException(errorMsg.toString());
         }
 
         measurementService.save(converToMeasurement(measurementDTO));
@@ -60,6 +60,26 @@ public class MeasurementController {
     }
 
     // TODO: getMeasurements rainy days count
+
+    @ExceptionHandler
+    private ResponseEntity<MeasurementErrorResponse> handleException(MeasurementNotFoundException e) {
+        MeasurementErrorResponse response = new MeasurementErrorResponse(
+                "Measurement with this id not found",
+                        System.currentTimeMillis()
+        );
+
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler
+    private ResponseEntity<MeasurementErrorResponse> handleException(MeasurementNotCreatedException e) {
+        MeasurementErrorResponse response = new MeasurementErrorResponse(
+                e.getMessage(),
+                System.currentTimeMillis()
+        );
+
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
 
     private Measurement converToMeasurement(MeasurementDTO measurementDTO) {
         return modelMapper.map(measurementDTO, Measurement.class);
