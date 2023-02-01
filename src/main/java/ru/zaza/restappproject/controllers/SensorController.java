@@ -7,18 +7,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import ru.zaza.restappproject.dto.SensorDTO;
 import ru.zaza.restappproject.models.Sensor;
 import ru.zaza.restappproject.services.SensorService;
+import ru.zaza.restappproject.util.SensorErrorResponse;
 import ru.zaza.restappproject.util.SensorNotCreatedException;
 
 import javax.validation.Valid;
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping("/sensors")
 public class SensorController {
 
@@ -51,6 +50,16 @@ public class SensorController {
         sensorService.save(convertToSensor(sensorDTO));
 
         return ResponseEntity.ok(HttpStatus.OK);
+    }
+
+    @ExceptionHandler
+    private ResponseEntity<SensorErrorResponse> handleException(SensorNotCreatedException e) {
+        SensorErrorResponse response = new SensorErrorResponse(
+                e.getMessage(),
+                System.currentTimeMillis()
+        );
+
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
     public Sensor convertToSensor(SensorDTO sensorDTO) {

@@ -1,7 +1,10 @@
 package ru.zaza.restappproject.models;
 
+import org.hibernate.validator.constraints.Range;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
@@ -15,12 +18,12 @@ public class Measurement {
     private int id;
 
     @Column(name = "value")
-    @NotEmpty(message = "Temperature value should not be empty")
-    @Size(min = -100, max = 100, message = "Temperature value should be between -100-100")
+    @NotNull(message = "Temperature value should not be null")
+    @Range(min = -100, max = 100, message = "Temperature value should be between -100-100")
     private int value;
 
     @Column(name = "raining")
-    @NotEmpty(message = "raining value should not be empty")
+    @NotNull(message = "raining value should not be empty")
     private boolean isRaining;
 
     @Column(name = "measure_time")
@@ -28,7 +31,7 @@ public class Measurement {
 
     @ManyToOne
     @JoinColumn(name = "sensor_id", referencedColumnName = "id")
-    @NotEmpty(message = "Sensor should not be empty")
+    @NotNull(message = "Sensor should not be null")
     private Sensor sensor;
 
     public Measurement() {
