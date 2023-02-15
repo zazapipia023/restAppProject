@@ -47,6 +47,8 @@ public class SensorController {
             throw new SensorNotCreatedException(errorMsg.toString());
         }
 
+
+
         sensorService.save(convertToSensor(sensorDTO));
 
         return ResponseEntity.ok(HttpStatus.OK);

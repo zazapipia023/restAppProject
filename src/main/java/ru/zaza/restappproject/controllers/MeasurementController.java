@@ -4,13 +4,13 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import ru.zaza.restappproject.dto.MeasurementDTO;
 import ru.zaza.restappproject.models.Measurement;
 import ru.zaza.restappproject.services.MeasurementService;
+import ru.zaza.restappproject.services.SensorService;
 import ru.zaza.restappproject.util.MeasurementErrorResponse;
 import ru.zaza.restappproject.util.MeasurementNotCreatedException;
 import ru.zaza.restappproject.util.MeasurementNotFoundException;
@@ -24,11 +24,13 @@ import java.util.stream.Collectors;
 public class MeasurementController {
 
     private final MeasurementService measurementService;
+    private final SensorService sensorService;
     private final ModelMapper modelMapper;
 
     @Autowired
-    public MeasurementController(MeasurementService measurementService, ModelMapper modelMapper) {
+    public MeasurementController(MeasurementService measurementService, SensorService sensorService, ModelMapper modelMapper) {
         this.measurementService = measurementService;
+        this.sensorService = sensorService;
         this.modelMapper = modelMapper;
     }
 
@@ -53,6 +55,12 @@ public class MeasurementController {
 
             throw new MeasurementNotCreatedException(errorMsg.toString());
         }
+
+        if(sensorService.findOne(measurementDTO.getSensor().getName()) == null) {
+            throw new MeasurementNotCreatedException("Sensor not found in db");
+        }
+
+        measurementDTO.setSensor(sensorService.findOne(measurementDTO.getSensor().getName()));
 
         measurementService.save(converToMeasurement(measurementDTO));
 

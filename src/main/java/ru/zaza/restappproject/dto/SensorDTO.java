@@ -14,7 +14,7 @@ public class SensorDTO {
     @Size(min = 3, max = 30, message = "Sensor name should be between 3-30 characters")
     private String name;
 
-//    private List<Measurement> measurements;
+    private List<Measurement> measurements;
 
     public String getName() {
         return name;
@@ -24,4 +24,11 @@ public class SensorDTO {
         this.name = name;
     }
 
+    public List<Measurement> getMeasurements() {
+        return measurements;
+    }
+
+    public void setMeasurements(List<Measurement> measurements) {
+        this.measurements = measurements;
+    }
 }

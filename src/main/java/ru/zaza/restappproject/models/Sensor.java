@@ -3,6 +3,7 @@ package ru.zaza.restappproject.models;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 import java.util.List;
 
 @Entity
@@ -19,8 +20,8 @@ public class Sensor {
     @Size(min = 3, max = 30, message = "Sensor name should be between 3-30 characters")
     private String name;
 
-//    @OneToMany(mappedBy = "sensor", fetch = FetchType.EAGER)
-//    private List<Measurement> measurements;
+    @OneToMany(mappedBy = "sensor", fetch = FetchType.EAGER)
+    private List<Measurement> measurements;
 
     public Sensor() {
 
@@ -47,4 +48,11 @@ public class Sensor {
         this.name = name;
     }
 
+    public List<Measurement> getMeasurements() {
+        return measurements;
+    }
+
+    public void setMeasurements(List<Measurement> measurements) {
+        this.measurements = measurements;
+    }
 }
