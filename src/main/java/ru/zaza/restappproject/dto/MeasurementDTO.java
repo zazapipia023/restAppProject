@@ -15,7 +15,7 @@ public class MeasurementDTO {
     private int value;
 
     @NotNull(message = "raining value should not be null")
-    private boolean isRaining;
+    private boolean raining;
 
     @NotNull(message = "Sensor should not be null")
     private Sensor sensor;
@@ -29,11 +29,11 @@ public class MeasurementDTO {
     }
 
     public boolean isRaining() {
-        return isRaining;
+        return raining;
     }
 
     public void setRaining(boolean raining) {
-        isRaining = raining;
+        this.raining = raining;
     }
 
     public Sensor getSensor() {

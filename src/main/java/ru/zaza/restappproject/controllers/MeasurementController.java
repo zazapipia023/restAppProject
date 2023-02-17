@@ -57,7 +57,7 @@ public class MeasurementController {
         }
 
         if(sensorService.findOne(measurementDTO.getSensor().getName()) == null) {
-            throw new MeasurementNotCreatedException("Sensor not found in db");
+            throw new MeasurementNotCreatedException("Sensor not found in database");
         }
 
         measurementDTO.setSensor(sensorService.findOne(measurementDTO.getSensor().getName()));
@@ -67,7 +67,11 @@ public class MeasurementController {
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
-    // TODO: getMeasurements rainy days count
+    @GetMapping("/rainyDaysCount")
+    public Integer countRainyDays() {
+        List<Measurement> measurements = measurementService.findRainyDays();
+        return measurements.size();
+    }
 
     @ExceptionHandler
     private ResponseEntity<MeasurementErrorResponse> handleException(MeasurementNotFoundException e) {

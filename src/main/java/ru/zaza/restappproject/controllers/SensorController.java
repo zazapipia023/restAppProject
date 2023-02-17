@@ -4,7 +4,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +12,7 @@ import ru.zaza.restappproject.models.Sensor;
 import ru.zaza.restappproject.services.SensorService;
 import ru.zaza.restappproject.util.SensorErrorResponse;
 import ru.zaza.restappproject.util.SensorNotCreatedException;
+import ru.zaza.restappproject.util.SensorValidator;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -22,17 +22,23 @@ import java.util.List;
 public class SensorController {
 
     private final SensorService sensorService;
+    private final SensorValidator sensorValidator;
     private final ModelMapper modelMapper;
 
     @Autowired
-    public SensorController(SensorService sensorService, ModelMapper modelMapper) {
+    public SensorController(SensorService sensorService, SensorValidator sensorValidator, ModelMapper modelMapper) {
         this.sensorService = sensorService;
+        this.sensorValidator = sensorValidator;
         this.modelMapper = modelMapper;
     }
 
     @PostMapping("/registration")
     public ResponseEntity<HttpStatus> create(@RequestBody @Valid SensorDTO sensorDTO,
                                              BindingResult bindingResult) {
+
+        Sensor sensor = convertToSensor(sensorDTO);
+        sensorValidator.validate(sensor, bindingResult);
+
         if (bindingResult.hasErrors()) {
             StringBuilder errorMsg = new StringBuilder();
 
@@ -49,7 +55,7 @@ public class SensorController {
 
 
 
-        sensorService.save(convertToSensor(sensorDTO));
+        sensorService.save(sensor);
 
         return ResponseEntity.ok(HttpStatus.OK);
     }

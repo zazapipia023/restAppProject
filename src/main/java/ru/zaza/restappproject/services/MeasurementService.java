@@ -30,6 +30,10 @@ public class MeasurementService {
         return measurement.orElseThrow(); // TODO: make MeasurementNotFoundException
     }
 
+    public List<Measurement> findRainyDays() {
+        return measurementRepository.findMeasurementsByRainingIsTrue();
+    }
+
     @Transactional
     public void save(Measurement measurement) {
         enrichMeasurement(measurement);

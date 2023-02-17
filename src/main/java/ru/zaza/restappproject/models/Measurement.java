@@ -24,7 +24,7 @@ public class Measurement {
 
     @Column(name = "raining")
     @NotNull(message = "raining value should not be empty")
-    private boolean isRaining;
+    private boolean raining;
 
     @Column(name = "measure_time")
     private LocalDateTime measureTime;
@@ -38,10 +38,10 @@ public class Measurement {
 
     }
 
-    public Measurement(int id, int value, boolean isRaining, Sensor sensor) {
+    public Measurement(int id, int value, boolean raining, Sensor sensor) {
         this.id = id;
         this.value = value;
-        this.isRaining = isRaining;
+        this.raining = raining;
         this.sensor = sensor;
     }
 
@@ -62,11 +62,11 @@ public class Measurement {
     }
 
     public boolean isRaining() {
-        return isRaining;
+        return raining;
     }
 
     public void setRaining(boolean raining) {
-        isRaining = raining;
+        this.raining = raining;
     }
 
     public LocalDateTime getMeasureTime() {
